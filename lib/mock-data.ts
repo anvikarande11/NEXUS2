@@ -11,6 +11,7 @@ export interface Task {
   progress: number
   confidence: number
   description: string
+  gravity?: number
 }
 
 export interface Issue {
@@ -100,7 +101,8 @@ export const mockTasks: Task[] = [
     dueDate: '2026-04-03T20:00:00',
     progress: 45,
     confidence: 35,
-    description: 'Complete 3NF normalization with ER diagrams for university enrollment system'
+    description: 'Complete 3NF normalization with ER diagrams for university enrollment system',
+    gravity: 100
   },
   {
     id: '2',
@@ -111,7 +113,8 @@ export const mockTasks: Task[] = [
     dueDate: '2026-04-04T12:00:00',
     progress: 70,
     confidence: 60,
-    description: 'Implement AVL tree with all rotation operations'
+    description: 'Implement AVL tree with all rotation operations',
+    gravity: 85
   },
   {
     id: '3',
@@ -122,7 +125,8 @@ export const mockTasks: Task[] = [
     dueDate: '2026-04-05T00:00:00',
     progress: 20,
     confidence: 45,
-    description: 'Simulate Round Robin and Priority scheduling algorithms'
+    description: 'Simulate Round Robin and Priority scheduling algorithms',
+    gravity: 92
   },
   {
     id: '4',
@@ -133,7 +137,8 @@ export const mockTasks: Task[] = [
     dueDate: '2026-04-06T12:00:00',
     progress: 85,
     confidence: 80,
-    description: 'Wireshark packet capture and analysis report'
+    description: 'Wireshark packet capture and analysis report',
+    gravity: 35
   },
   {
     id: '5',
@@ -144,7 +149,8 @@ export const mockTasks: Task[] = [
     dueDate: '2026-04-07T12:00:00',
     progress: 55,
     confidence: 50,
-    description: 'Build and evaluate linear regression model on housing dataset'
+    description: 'Build and evaluate linear regression model on housing dataset',
+    gravity: 58
   },
   {
     id: '6',
@@ -155,7 +161,8 @@ export const mockTasks: Task[] = [
     dueDate: '2026-04-10T12:00:00',
     progress: 30,
     confidence: 70,
-    description: 'Practice problems on integration by parts'
+    description: 'Practice problems on integration by parts',
+    gravity: 18
   }
 ]
 
@@ -793,7 +800,11 @@ export function calculateDangerScore(task: Task): number {
     low: 1
   }
   
-  const hoursUntilDue = Math.max(0, (new Date(task.dueDate).getTime() - Date.now()) / (1000 * 60 * 60))
+  // Use a fixed reference time (Unix epoch) to avoid hydration mismatch
+  // Calculate hours until due relative to the task's dueDate properties
+  const taskDue = new Date(task.dueDate).getTime()
+  const baseTime = new Date('2024-01-15').getTime() // Fixed reference point
+  const hoursUntilDue = Math.max(0, (taskDue - baseTime) / (1000 * 60 * 60))
   const timeUrgency = Math.max(0, 100 - hoursUntilDue * 2)
   const progressPenalty = 100 - task.progress
   const confidencePenalty = 100 - task.confidence
@@ -813,8 +824,8 @@ export function calculateTaskGravity(task: Task): number {
 // Get time until due
 export function getTimeUntilDue(dueDate: string): string {
   const due = new Date(dueDate)
-  const now = new Date()
-  const diffMs = due.getTime() - now.getTime()
+  const baseTime = new Date('2024-01-15') // Fixed reference point matching calculateDangerScore
+  const diffMs = due.getTime() - baseTime.getTime()
   
   if (diffMs < 0) return 'Overdue'
   
