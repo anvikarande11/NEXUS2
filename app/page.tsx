@@ -23,7 +23,8 @@ import { SplitScreenLectureModal } from '@/components/dashboard/split-screen-lec
 import { BlackoutMode } from '@/components/dashboard/blackout-mode'
 import { NexusChat } from '@/components/dashboard/nexus-chat'
 import { UploadResourceModal } from '@/components/dashboard/upload-resource-modal'
-import { Search, Command, Flame, User, Moon, Sun, Upload, MessageCircle } from 'lucide-react'
+import { PeerStudyCircle } from '@/components/dashboard/peer-study-circle'
+import { Search, Command, Flame, User, Moon, Sun, Upload, MessageCircle, Users } from 'lucide-react'
 import { mockClassPaths } from '@/lib/mock-data'
 
 // Animation variants
@@ -138,7 +139,7 @@ const viewComponents: Record<ViewType, React.ComponentType> = {
 
 // Top Bar Component
 function TopBar() {
-  const { toggleCommandPalette, toggleBlackoutMode, toggleChat, openUpload } = useDashboardStore()
+  const { toggleCommandPalette, toggleBlackoutMode, toggleChat, openUpload, togglePeerStudy } = useDashboardStore()
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
@@ -191,22 +192,38 @@ function TopBar() {
           <MessageCircle className="w-4 h-4" />
         </motion.button>
 
+        {/* Peer Study Button */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={togglePeerStudy}
+          className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+          title="Peer Study Circle"
+        >
+          <Users className="w-4 h-4" />
+        </motion.button>
+
         {/* Theme Toggle */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+          className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground relative"
           title="Toggle theme"
           suppressHydrationWarning
         >
-          {mounted ? (
-            theme === 'dark' ? (
-              <Sun className="w-4 h-4" key="sun" />
-            ) : (
-              <Moon className="w-4 h-4" key="moon" />
-            )
-          ) : null}
+          <Sun 
+            className={`w-4 h-4 ${
+              mounted && theme === 'light' ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            } transition-opacity duration-300`}
+            suppressHydrationWarning
+          />
+          <Moon 
+            className={`w-4 h-4 absolute top-2 left-2 ${
+              mounted && theme === 'dark' ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            } transition-opacity duration-300`}
+            suppressHydrationWarning
+          />
         </motion.button>
 
         {/* Profile */}
@@ -316,6 +333,9 @@ export default function Dashboard() {
 
       {/* Upload Resource Modal */}
       <UploadResourceModal />
+
+      {/* Peer Study Circle */}
+      <PeerStudyCircle />
 
       {/* Decorative Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">

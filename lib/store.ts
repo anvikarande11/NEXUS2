@@ -10,10 +10,30 @@ export type ViewType =
   | 'settings' 
   | 'games'
   | 'class-path'
+  | 'peer-study'
 
 export type ResourceFilterType = 'all' | 'notes' | 'links' | 'videos' | 'pdf' | 'favorites'
 export type HealthStatus = 'red' | 'yellow' | 'green'
 export type ThemeMode = 'light' | 'dark'
+
+export interface StudyPeer {
+  id: string
+  name: string
+  avatar: string
+  status: 'studying' | 'available' | 'away'
+  topic: string
+  timeOnline: number
+}
+
+export interface StudyRoom {
+  id: string
+  name: string
+  topic: string
+  peers: StudyPeer[]
+  pomodoroActive: boolean
+  focusTime: number
+  breakTime: number
+}
 
 interface CalendarNote {
   id: string
@@ -115,6 +135,17 @@ interface DashboardState {
   openLectureModal: (nodeId: string) => void
   closeLectureModal: () => void
   calculateWorkflowHealth: (subjectId: string) => HealthStatus
+  
+  // Peer Study Circle
+  isPeerStudyOpen: boolean
+  togglePeerStudy: () => void
+  studyRooms: StudyRoom[]
+  activeStudyRoomId: string | null
+  joinStudyRoom: (roomId: string) => void
+  leaveStudyRoom: () => void
+  startPomodoro: (roomId: string, focusTime: number, breakTime: number) => void
+  stopPomodoro: (roomId: string) => void
+  onlinePeers: StudyPeer[]
   
   // Actions
   toggleSidebar: () => void
@@ -255,6 +286,54 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
     if (percentage >= 31) return 'yellow'
     return 'red'
   },
+  
+  // Peer Study Circle
+  isPeerStudyOpen: false,
+  togglePeerStudy: () => set((state) => ({ isPeerStudyOpen: !state.isPeerStudyOpen })),
+  studyRooms: [
+    {
+      id: 'room-1',
+      name: 'DSA Bootcamp',
+      topic: 'Binary Trees & Recursion',
+      peers: [
+        { id: 'p1', name: 'Alex', avatar: 'AK', status: 'studying', topic: 'BST Deletion', timeOnline: 45 },
+        { id: 'p2', name: 'Jordan', avatar: 'JD', status: 'studying', topic: 'Tree Traversal', timeOnline: 30 }
+      ],
+      pomodoroActive: true,
+      focusTime: 25,
+      breakTime: 5
+    },
+    {
+      id: 'room-2',
+      name: 'DBMS Study Group',
+      topic: 'Normalization & SQL',
+      peers: [
+        { id: 'p3', name: 'Sam', avatar: 'SM', status: 'available', topic: 'Joins & Subqueries', timeOnline: 20 }
+      ],
+      pomodoroActive: false,
+      focusTime: 25,
+      breakTime: 5
+    }
+  ],
+  activeStudyRoomId: null,
+  joinStudyRoom: (roomId) => set({ activeStudyRoomId: roomId }),
+  leaveStudyRoom: () => set({ activeStudyRoomId: null }),
+  startPomodoro: (roomId, focusTime, breakTime) => set((state) => ({
+    studyRooms: state.studyRooms.map(room =>
+      room.id === roomId ? { ...room, pomodoroActive: true, focusTime, breakTime } : room
+    )
+  })),
+  stopPomodoro: (roomId) => set((state) => ({
+    studyRooms: state.studyRooms.map(room =>
+      room.id === roomId ? { ...room, pomodoroActive: false } : room
+    )
+  })),
+  onlinePeers: [
+    { id: 'p1', name: 'Alex', avatar: 'AK', status: 'studying', topic: 'BST Deletion', timeOnline: 45 },
+    { id: 'p2', name: 'Jordan', avatar: 'JD', status: 'studying', topic: 'Tree Traversal', timeOnline: 30 },
+    { id: 'p3', name: 'Sam', avatar: 'SM', status: 'available', topic: 'Joins & Subqueries', timeOnline: 20 },
+    { id: 'p4', name: 'Casey', avatar: 'CY', status: 'away', topic: 'Math', timeOnline: 120 },
+  ],
   
   // Actions
   toggleSidebar: () => set((state) => ({ isSidebarCollapsed: !state.isSidebarCollapsed })),
