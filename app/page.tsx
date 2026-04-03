@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
 import { useDashboardStore, ViewType } from '@/lib/store'
 
@@ -19,7 +20,10 @@ import { PuzzleGames } from '@/components/dashboard/puzzle-games'
 import { SettingsView } from '@/components/dashboard/settings-view'
 import { ClassPath } from '@/components/dashboard/class-path'
 import { SplitScreenLectureModal } from '@/components/dashboard/split-screen-lecture-modal'
-import { Search, Command, Flame, User } from 'lucide-react'
+import { BlackoutMode } from '@/components/dashboard/blackout-mode'
+import { NexusChat } from '@/components/dashboard/nexus-chat'
+import { UploadResourceModal } from '@/components/dashboard/upload-resource-modal'
+import { Search, Command, Flame, User, Moon, Sun, Upload, MessageCircle } from 'lucide-react'
 import { mockClassPaths } from '@/lib/mock-data'
 
 // Animation variants
@@ -134,7 +138,8 @@ const viewComponents: Record<ViewType, React.ComponentType> = {
 
 // Top Bar Component
 function TopBar() {
-  const { toggleCommandPalette } = useDashboardStore()
+  const { toggleCommandPalette, toggleBlackoutMode, toggleChat, openUpload } = useDashboardStore()
+  const { theme, setTheme } = useTheme()
 
   return (
     <div className="h-14 flex items-center justify-between px-4 border-b border-border glass-panel">
@@ -159,8 +164,49 @@ function TopBar() {
           <span className="text-sm font-medium text-warning">7 day streak</span>
         </div>
 
+        {/* Upload Button */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={openUpload}
+          className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+          title="Upload resource"
+        >
+          <Upload className="w-4 h-4" />
+        </motion.button>
+
+        {/* Chat Button */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={toggleChat}
+          className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+          title="Nexus AI Chat"
+        >
+          <MessageCircle className="w-4 h-4" />
+        </motion.button>
+
+        {/* Theme Toggle */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+          title="Toggle theme"
+        >
+          {theme === 'dark' ? (
+            <Sun className="w-4 h-4" />
+          ) : (
+            <Moon className="w-4 h-4" />
+          )}
+        </motion.button>
+
         {/* Profile */}
-        <button className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors">
+        <button
+          onClick={toggleBlackoutMode}
+          className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors"
+          title="Focus mode"
+        >
           <User className="w-4 h-4 text-primary" />
         </button>
       </div>
@@ -253,6 +299,15 @@ export default function Dashboard() {
 
       {/* Split Screen Lecture Modal */}
       <SplitScreenLectureModal />
+
+      {/* Blackout Mode */}
+      <BlackoutMode />
+
+      {/* Nexus AI Chat */}
+      <NexusChat />
+
+      {/* Upload Resource Modal */}
+      <UploadResourceModal />
 
       {/* Decorative Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">

@@ -11,8 +11,9 @@ export type ViewType =
   | 'games'
   | 'class-path'
 
-export type ResourceFilterType = 'all' | 'notes' | 'links' | 'videos' | 'pdf'
+export type ResourceFilterType = 'all' | 'notes' | 'links' | 'videos' | 'pdf' | 'favorites'
 export type HealthStatus = 'red' | 'yellow' | 'green'
+export type ThemeMode = 'light' | 'dark'
 
 interface CalendarNote {
   id: string
@@ -20,6 +21,13 @@ interface CalendarNote {
   content: string
   type: 'sticky' | 'photo'
   photoUrl?: string
+}
+
+export interface ChatMessage {
+  id: string
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: number
 }
 
 export interface Node {
@@ -48,6 +56,28 @@ interface DashboardState {
   // View navigation
   currentView: ViewType
   setCurrentView: (view: ViewType) => void
+  
+  // Theme
+  theme: ThemeMode
+  setTheme: (theme: ThemeMode) => void
+  
+  // Blackout Mode
+  isBlackoutMode: boolean
+  toggleBlackoutMode: () => void
+  blackoutNotes: string
+  setBlackoutNotes: (notes: string) => void
+  
+  // Chat
+  isChatOpen: boolean
+  toggleChat: () => void
+  chatMessages: ChatMessage[]
+  addChatMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'>) => void
+  clearChat: () => void
+  
+  // Upload Modal
+  isUploadOpen: boolean
+  openUpload: () => void
+  closeUpload: () => void
   
   // Focus mode
   isDeepFocusMode: boolean
@@ -98,6 +128,34 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
   currentView: 'dashboard',
   setCurrentView: (view) => set({ currentView: view }),
   
+  // Theme
+  theme: 'dark',
+  setTheme: (theme) => set({ theme }),
+  
+  // Blackout Mode
+  isBlackoutMode: false,
+  toggleBlackoutMode: () => set((state) => ({ isBlackoutMode: !state.isBlackoutMode })),
+  blackoutNotes: '',
+  setBlackoutNotes: (notes) => set({ blackoutNotes: notes }),
+  
+  // Chat
+  isChatOpen: false,
+  toggleChat: () => set((state) => ({ isChatOpen: !state.isChatOpen })),
+  chatMessages: [],
+  addChatMessage: (message) => set((state) => ({
+    chatMessages: [...state.chatMessages, { 
+      ...message, 
+      id: crypto.randomUUID(),
+      timestamp: Date.now()
+    }]
+  })),
+  clearChat: () => set({ chatMessages: [] }),
+  
+  // Upload Modal
+  isUploadOpen: false,
+  openUpload: () => set({ isUploadOpen: true }),
+  closeUpload: () => set({ isUploadOpen: false }),
+  
   // Focus mode
   isDeepFocusMode: false,
   toggleDeepFocusMode: () => set((state) => ({ isDeepFocusMode: !state.isDeepFocusMode })),
@@ -117,7 +175,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
     calendarNotes: state.calendarNotes.filter(n => n.id !== id)
   })),
   
-  // Class Path state - initialized empty, populated by mock data
+  // Class Path state
   classPaths: [],
   activeClassId: null,
   selectedNodeId: null,
@@ -193,8 +251,8 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
     const completedCount = classPath.nodes.filter(n => n.completed).length
     const percentage = (completedCount / classPath.nodes.length) * 100
     
-    if (percentage >= 75) return 'green'
-    if (percentage >= 50) return 'yellow'
+    if (percentage >= 71) return 'green'
+    if (percentage >= 31) return 'yellow'
     return 'red'
   },
   

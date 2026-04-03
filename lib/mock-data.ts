@@ -34,6 +34,7 @@ export interface IssueReply {
   avatar: string
   content: string
   timestamp: string
+  timeAgo?: string
   isResolution?: boolean
 }
 
@@ -193,6 +194,7 @@ export const mockIssues: Issue[] = [
         avatar: 'SC',
         content: 'Your BST implementation doesn\'t handle the case where the node to delete has two children. Please review the inorder successor approach.',
         timestamp: '2026-04-03T10:00:00',
+        timeAgo: '5h ago'
       }
     ]
   },
@@ -213,6 +215,7 @@ export const mockIssues: Issue[] = [
         avatar: 'MT',
         content: 'Great work on identifying functional dependencies. Consider adding a section on BCNF for extra credit.',
         timestamp: '2026-04-02T12:00:00',
+        timeAgo: '1d ago'
       },
       {
         id: 'r3',
@@ -220,6 +223,7 @@ export const mockIssues: Issue[] = [
         avatar: 'ME',
         content: 'Thank you! I\'ve added the BCNF analysis section.',
         timestamp: '2026-04-02T16:00:00',
+        timeAgo: '1d ago',
         isResolution: true
       }
     ]
@@ -241,6 +245,7 @@ export const mockIssues: Issue[] = [
         avatar: 'EW',
         content: 'Your deadlock prevention algorithm has a fundamental flaw. Banker\'s algorithm requires knowing maximum resources upfront.',
         timestamp: '2026-04-03T07:00:00',
+        timeAgo: '8h ago'
       },
       {
         id: 'r5',
@@ -248,6 +253,7 @@ export const mockIssues: Issue[] = [
         avatar: 'ME',
         content: 'I\'ve revised the section to include proper resource allocation matrices.',
         timestamp: '2026-04-03T09:00:00',
+        timeAgo: '6h ago'
       }
     ]
   },
@@ -268,6 +274,7 @@ export const mockIssues: Issue[] = [
         avatar: 'JL',
         content: 'Excellent use of Wireshark filters. Your TCP handshake analysis was particularly well documented.',
         timestamp: '2026-04-01T14:00:00',
+        timeAgo: '2d ago',
         isResolution: true
       }
     ]

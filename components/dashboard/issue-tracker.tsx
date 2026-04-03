@@ -59,7 +59,7 @@ function ReplyThread({ replies }: { replies: IssueReply[] }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">{reply.author}</span>
-              <span className="text-xs text-muted-foreground">{formatTimeAgo(reply.timestamp)}</span>
+              <span suppressHydrationWarning className="text-xs text-muted-foreground">{reply.timeAgo ?? 'recently'}</span>
               {reply.isResolution && (
                 <Badge variant="outline" className="text-xs text-primary border-primary/30">
                   <Check className="w-3 h-3 mr-1" />

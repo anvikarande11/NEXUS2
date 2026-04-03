@@ -109,7 +109,7 @@ function SubjectCard({ subject }: { subject: Subject }) {
     ? (classPath.nodes.filter(n => n.completed).length / classPath.nodes.length) * 100
     : 0
   
-  const workflowStatus = workflowHealth >= 75 ? 'green' : workflowHealth >= 50 ? 'yellow' : 'red'
+  const workflowStatus = workflowHealth >= 71 ? 'green' : workflowHealth >= 31 ? 'yellow' : 'red'
   const workflowColor = {
     green: '#22c55e',
     yellow: '#f59e0b',
