@@ -10,7 +10,8 @@ import {
   Activity, 
   Settings,
   Gamepad2,
-  Focus
+  Focus,
+  BookOpen
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useDashboardStore, ViewType } from '@/lib/store'
@@ -28,6 +29,7 @@ const navItems: { icon: typeof LayoutDashboard; label: string; view: ViewType; s
   { icon: Share2, label: 'Knowledge Graph', view: 'knowledge-graph', shortcut: '4' },
   { icon: Calendar, label: 'Funky Calendar', view: 'calendar', shortcut: '5' },
   { icon: Activity, label: 'Subject Health', view: 'subject-health', shortcut: '6' },
+  { icon: BookOpen, label: 'Class Path', view: 'class-path', shortcut: '8' },
   { icon: Gamepad2, label: 'Puzzle Games', view: 'games', shortcut: '7' },
   { icon: Settings, label: 'Settings', view: 'settings', shortcut: ',' },
 ]

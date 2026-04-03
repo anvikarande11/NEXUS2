@@ -21,6 +21,7 @@ import {
   Highlighter
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useDashboardStore } from '@/lib/store'
 import { mockResources, type Resource } from '@/lib/mock-data'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -270,15 +271,36 @@ function ResourcePreviewDrawer({
 }
 
 export function ResourceShelf() {
+  const { resourceFilter, setResourceFilter } = useDashboardStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedResource, setSelectedResource] = useState<Resource | null>(null)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
-  const filteredResources = mockResources.filter(resource =>
-    resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    resource.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    resource.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-  )
+  // Filter resources based on search and resource type filter
+  const filteredResources = useMemo(() => {
+    return mockResources.filter(resource => {
+      // Search filter
+      const matchesSearch = 
+        resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        resource.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        resource.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+
+      // Type filter
+      if (resourceFilter === 'all') {
+        return matchesSearch
+      }
+      
+      const filterMap = {
+        'pdf': 'pdf',
+        'notes': 'notes',
+        'links': 'link',
+        'videos': 'video'
+      }
+      
+      const typeToMatch = filterMap[resourceFilter as keyof typeof filterMap]
+      return matchesSearch && resource.type === typeToMatch
+    })
+  }, [searchQuery, resourceFilter])
 
   const handlePreview = (id: string) => {
     const resource = mockResources.find(r => r.id === id)
@@ -320,16 +342,32 @@ export function ResourceShelf() {
         </div>
 
         {/* Quick Filters */}
-        <div className="flex gap-2">
-          {(['All', 'Favorites', 'PDF', 'Notes', 'Links', 'Videos'] as const).map((filter) => (
-            <Badge
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {(['all', 'notes', 'links', 'videos', 'pdf'] as const).map((filter) => (
+            <motion.button
               key={filter}
-              variant={filter === 'All' ? 'default' : 'outline'}
-              className="cursor-pointer hover:bg-primary/10 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setResourceFilter(filter)}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex-shrink-0",
+                resourceFilter === filter
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+              )}
             >
-              {filter}
-            </Badge>
+              {filter === 'all' && 'All'}
+              {filter === 'pdf' && 'PDFs'}
+              {filter === 'notes' && 'Notes'}
+              {filter === 'links' && 'Links'}
+              {filter === 'videos' && 'Videos'}
+            </motion.button>
           ))}
+        </div>
+
+        {/* Resource Count */}
+        <div className="text-sm text-muted-foreground">
+          Showing {filteredResources.length} of {mockResources.length} resources
         </div>
 
         {/* Resource Grid */}
@@ -344,6 +382,15 @@ export function ResourceShelf() {
             ))}
           </AnimatePresence>
         </div>
+
+        {/* Empty State */}
+        {filteredResources.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <FolderOpen className="w-12 h-12 text-muted-foreground/40 mb-3" />
+            <p className="text-muted-foreground font-medium">No resources found</p>
+            <p className="text-sm text-muted-foreground mt-1">Try adjusting your filters or search query</p>
+          </div>
+        )}
       </div>
 
       {/* Preview Drawer */}

@@ -73,6 +73,22 @@ export interface GraphEdge {
   type: 'shared-tag' | 'dependency' | 'prerequisite'
 }
 
+export interface Node {
+  id: string
+  label: string
+  completed: boolean
+  resourceIds: string[]
+  x: number
+  y: number
+  order: number
+}
+
+export interface ClassPath {
+  id: string
+  subjectId: string
+  nodes: Node[]
+}
+
 // Mock Tasks
 export const mockTasks: Task[] = [
   {
@@ -447,6 +463,325 @@ export const mockGraphEdges: GraphEdge[] = [
   { source: 'res-btree', target: 'sub-dbms', type: 'dependency' },
   { source: 'res-avl', target: 'con-trees', type: 'shared-tag' },
   { source: 'res-avl', target: 'sub-dsa', type: 'dependency' },
+]
+
+// Mock ClassPaths for Dynamic Mastery
+export const mockClassPaths: ClassPath[] = [
+  {
+    id: 'cp-1',
+    subjectId: '1', // DBMS
+    nodes: [
+      {
+        id: 'n1-1',
+        label: 'ER Modeling Basics',
+        completed: true,
+        resourceIds: ['1'],
+        x: 0,
+        y: 0,
+        order: 0,
+      },
+      {
+        id: 'n1-2',
+        label: 'Normalization Process',
+        completed: true,
+        resourceIds: ['1'],
+        x: 0,
+        y: 0,
+        order: 1,
+      },
+      {
+        id: 'n1-3',
+        label: 'First Normal Form',
+        completed: true,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 2,
+      },
+      {
+        id: 'n1-4',
+        label: 'Second Normal Form',
+        completed: false,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 3,
+      },
+      {
+        id: 'n1-5',
+        label: 'Third Normal Form',
+        completed: false,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 4,
+      },
+      {
+        id: 'n1-6',
+        label: 'BCNF and Higher',
+        completed: false,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 5,
+      },
+    ],
+  },
+  {
+    id: 'cp-2',
+    subjectId: '2', // DSA
+    nodes: [
+      {
+        id: 'n2-1',
+        label: 'Arrays and Linked Lists',
+        completed: true,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 0,
+      },
+      {
+        id: 'n2-2',
+        label: 'Stacks and Queues',
+        completed: true,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 1,
+      },
+      {
+        id: 'n2-3',
+        label: 'Tree Basics',
+        completed: true,
+        resourceIds: ['2', '7'],
+        x: 0,
+        y: 0,
+        order: 2,
+      },
+      {
+        id: 'n2-4',
+        label: 'Binary Search Trees',
+        completed: true,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 3,
+      },
+      {
+        id: 'n2-5',
+        label: 'AVL Trees',
+        completed: false,
+        resourceIds: ['2'],
+        x: 0,
+        y: 0,
+        order: 4,
+      },
+      {
+        id: 'n2-6',
+        label: 'Balanced Trees',
+        completed: false,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 5,
+      },
+      {
+        id: 'n2-7',
+        label: 'Graph Algorithms',
+        completed: false,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 6,
+      },
+    ],
+  },
+  {
+    id: 'cp-3',
+    subjectId: '3', // Operating Systems
+    nodes: [
+      {
+        id: 'n3-1',
+        label: 'Process Management',
+        completed: true,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 0,
+      },
+      {
+        id: 'n3-2',
+        label: 'Process Scheduling',
+        completed: false,
+        resourceIds: ['3'],
+        x: 0,
+        y: 0,
+        order: 1,
+      },
+      {
+        id: 'n3-3',
+        label: 'Synchronization',
+        completed: false,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 2,
+      },
+      {
+        id: 'n3-4',
+        label: 'Deadlock Prevention',
+        completed: false,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 3,
+      },
+      {
+        id: 'n3-5',
+        label: 'Memory Management',
+        completed: false,
+        resourceIds: ['8'],
+        x: 0,
+        y: 0,
+        order: 4,
+      },
+    ],
+  },
+  {
+    id: 'cp-4',
+    subjectId: '4', // Computer Networks
+    nodes: [
+      {
+        id: 'n4-1',
+        label: 'Network Layers',
+        completed: true,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 0,
+      },
+      {
+        id: 'n4-2',
+        label: 'TCP/IP Protocol',
+        completed: true,
+        resourceIds: ['4'],
+        x: 0,
+        y: 0,
+        order: 1,
+      },
+      {
+        id: 'n4-3',
+        label: 'Packet Analysis',
+        completed: true,
+        resourceIds: ['4'],
+        x: 0,
+        y: 0,
+        order: 2,
+      },
+      {
+        id: 'n4-4',
+        label: 'Routing Protocols',
+        completed: false,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 3,
+      },
+      {
+        id: 'n4-5',
+        label: 'Network Security',
+        completed: false,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 4,
+      },
+    ],
+  },
+  {
+    id: 'cp-5',
+    subjectId: '5', // Machine Learning
+    nodes: [
+      {
+        id: 'n5-1',
+        label: 'ML Fundamentals',
+        completed: true,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 0,
+      },
+      {
+        id: 'n5-2',
+        label: 'Linear Regression',
+        completed: true,
+        resourceIds: ['5'],
+        x: 0,
+        y: 0,
+        order: 1,
+      },
+      {
+        id: 'n5-3',
+        label: 'Classification',
+        completed: false,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 2,
+      },
+      {
+        id: 'n5-4',
+        label: 'Neural Networks',
+        completed: false,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 3,
+      },
+    ],
+  },
+  {
+    id: 'cp-6',
+    subjectId: '6', // Mathematics
+    nodes: [
+      {
+        id: 'n6-1',
+        label: 'Calculus Basics',
+        completed: true,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 0,
+      },
+      {
+        id: 'n6-2',
+        label: 'Differentiation',
+        completed: true,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 1,
+      },
+      {
+        id: 'n6-3',
+        label: 'Integration',
+        completed: false,
+        resourceIds: ['6'],
+        x: 0,
+        y: 0,
+        order: 2,
+      },
+      {
+        id: 'n6-4',
+        label: 'Advanced Integration',
+        completed: false,
+        resourceIds: [],
+        x: 0,
+        y: 0,
+        order: 3,
+      },
+    ],
+  },
 ]
 
 // Helper function to calculate danger score

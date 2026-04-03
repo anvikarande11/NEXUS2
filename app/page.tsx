@@ -17,7 +17,10 @@ import { SubjectHealth } from '@/components/dashboard/subject-health'
 import { FunkyCalendar } from '@/components/dashboard/funky-calendar'
 import { PuzzleGames } from '@/components/dashboard/puzzle-games'
 import { SettingsView } from '@/components/dashboard/settings-view'
+import { ClassPath } from '@/components/dashboard/class-path'
+import { SplitScreenLectureModal } from '@/components/dashboard/split-screen-lecture-modal'
 import { Search, Command, Flame, User } from 'lucide-react'
+import { mockClassPaths } from '@/lib/mock-data'
 
 // Animation variants
 const viewVariants = {
@@ -93,6 +96,14 @@ function SubjectHealthView() {
   )
 }
 
+function ClassPathView() {
+  return (
+    <div className="h-full bg-card/50 rounded-2xl border border-border p-6 overflow-auto">
+      <ClassPath />
+    </div>
+  )
+}
+
 function GamesView() {
   return (
     <div className="h-full bg-card/50 rounded-2xl border border-border p-6 overflow-auto">
@@ -116,6 +127,7 @@ const viewComponents: Record<ViewType, React.ComponentType> = {
   'knowledge-graph': KnowledgeGraphView,
   'calendar': CalendarView,
   'subject-health': SubjectHealthView,
+  'class-path': ClassPathView,
   'games': GamesView,
   'settings': SettingsViewWrapper,
 }
@@ -158,6 +170,15 @@ function TopBar() {
 
 export default function Dashboard() {
   const { currentView, isDeepFocusMode, setCurrentView } = useDashboardStore()
+
+  // Initialize classPaths from mock data on mount
+  useEffect(() => {
+    const store = useDashboardStore.getState()
+    if (store.classPaths.length === 0) {
+      // Manually initialize classPaths by updating store state
+      useDashboardStore.setState({ classPaths: mockClassPaths })
+    }
+  }, [])
 
   // Keyboard shortcuts for view navigation
   useEffect(() => {
@@ -229,6 +250,9 @@ export default function Dashboard() {
 
       {/* Command Palette */}
       <CommandPalette />
+
+      {/* Split Screen Lecture Modal */}
+      <SplitScreenLectureModal />
 
       {/* Decorative Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">

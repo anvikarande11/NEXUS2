@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { Activity, Shield, Zap, AlertTriangle, TrendingUp, Users, BookOpen, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useDashboardStore } from '@/lib/store'
 import { mockSubjects, type Subject } from '@/lib/mock-data'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
@@ -89,6 +90,8 @@ function XPBar({ value, level }: { value: number; level: number }) {
 }
 
 function SubjectCard({ subject }: { subject: Subject }) {
+  const { setCurrentView, setActiveClass, classPaths } = useDashboardStore()
+  
   const riskConfig = {
     safe: { icon: TrendingUp, color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20' },
     warning: { icon: AlertTriangle, color: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/20' },
@@ -99,6 +102,26 @@ function SubjectCard({ subject }: { subject: Subject }) {
   const RiskIcon = risk.icon
   const xpLevel = Math.floor(subject.marks / 20) + 1
   const xpProgress = (subject.marks % 20) * 5
+
+  // Calculate workflow health from ClassPath
+  const classPath = classPaths.find(cp => cp.subjectId === subject.id)
+  const workflowHealth = classPath 
+    ? (classPath.nodes.filter(n => n.completed).length / classPath.nodes.length) * 100
+    : 0
+  
+  const workflowStatus = workflowHealth >= 75 ? 'green' : workflowHealth >= 50 ? 'yellow' : 'red'
+  const workflowColor = {
+    green: '#22c55e',
+    yellow: '#f59e0b',
+    red: '#ef4444'
+  }[workflowStatus]
+
+  const handleViewClassPath = () => {
+    if (classPath) {
+      setActiveClass(classPath.id)
+      setCurrentView('class-path')
+    }
+  }
 
   return (
     <motion.div
@@ -156,6 +179,15 @@ function SubjectCard({ subject }: { subject: Subject }) {
           color="#8b5cf6"
           label="Revision Confidence"
         />
+
+        {/* Workflow Health */}
+        {classPath && (
+          <HealthBar 
+            value={Math.round(workflowHealth)} 
+            color={workflowColor}
+            label="Workflow Health"
+          />
+        )}
       </div>
 
       {/* XP Bar */}
@@ -174,6 +206,18 @@ function SubjectCard({ subject }: { subject: Subject }) {
           <span>{subject.issueBacklog} issues</span>
         </div>
       </div>
+
+      {/* Class Path Button */}
+      {classPath && (
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleViewClassPath}
+          className="w-full mt-4 px-3 py-2 rounded-lg bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20 transition-colors"
+        >
+          View Class Path
+        </motion.button>
+      )}
     </motion.div>
   )
 }
