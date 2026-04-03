@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Trash2, CheckCircle2, Circle, Filter, Download } from 'lucide-react'
+import { Plus, Trash2, CheckCircle2, Circle, Filter, Download, Video, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useDashboardStore, type Node } from '@/lib/store'
 import { mockSubjects, mockResources, mockClassPaths } from '@/lib/mock-data'
@@ -110,6 +110,17 @@ function SVGNodeCanvas({
             >
               {node.completed ? '✓' : i + 1}
             </text>
+
+            {/* Video indicator - small badge on node */}
+            {node.resourceIds.length > 0 && (
+              <circle
+                cx={pos.x + 18}
+                cy={pos.y - 18}
+                r="6"
+                fill="var(--primary)"
+                className="text-primary"
+              />
+            )}
 
             {/* Label below node */}
             <text
@@ -351,17 +362,32 @@ export function ClassPath() {
                   )}
                 </div>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleDeleteNode(node.id)
-                  }}
-                  className="rounded-lg"
-                >
-                  <Trash2 className="w-4 h-4 text-destructive" />
-                </Button>
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      // Trigger video upload modal
+                      alert(`Upload lecture video for: ${node.label}`)
+                    }}
+                    className="rounded-lg"
+                    title="Add lecture video"
+                  >
+                    <Video className="w-4 h-4 text-primary" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDeleteNode(node.id)
+                    }}
+                    className="rounded-lg"
+                  >
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </Button>
+                </div>
               </motion.div>
             ))}
           </AnimatePresence>

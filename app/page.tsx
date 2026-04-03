@@ -202,13 +202,11 @@ function TopBar() {
         >
           {mounted ? (
             theme === 'dark' ? (
-              <Sun className="w-4 h-4" />
+              <Sun className="w-4 h-4" key="sun" />
             ) : (
-              <Moon className="w-4 h-4" />
+              <Moon className="w-4 h-4" key="moon" />
             )
-          ) : (
-            <Sun className="w-4 h-4" />
-          )}
+          ) : null}
         </motion.button>
 
         {/* Profile */}
