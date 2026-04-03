@@ -89,9 +89,9 @@ function TaskCard({ task, isTopRisk, isExpanded, onToggle }: {
   onToggle: () => void;
 }) {
   const colors = urgencyColors[task.urgency]
-  // Use pre-calculated gravity or fallback to calculation
-  const gravity = task.gravity ?? Math.round(calculateTaskGravity(task))
-  const timeUntil = task.timeUntil ?? getTimeUntilDue(task.dueDate)
+  // Use only pre-calculated values, never call functions during render
+  const gravity = task.gravity ?? 0
+  const timeUntil = task.timeUntil ?? 'N/A'
   const isOverdue = timeUntil === 'Overdue'
 
   return (

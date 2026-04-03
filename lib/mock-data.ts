@@ -23,6 +23,7 @@ export interface Issue {
   severity: 'critical' | 'major' | 'minor' | 'suggestion'
   status: 'open' | 'in-review' | 'resolved' | 'reopened'
   timestamp: string
+  timeAgo?: string
   replies: IssueReply[]
   assignmentId?: string
 }
@@ -183,6 +184,7 @@ export const mockIssues: Issue[] = [
     severity: 'major',
     status: 'open',
     timestamp: '2026-04-03T10:00:00',
+    timeAgo: '5h ago',
     assignmentId: '2',
     replies: [
       {
@@ -202,6 +204,7 @@ export const mockIssues: Issue[] = [
     severity: 'suggestion',
     status: 'resolved',
     timestamp: '2026-04-02T12:00:00',
+    timeAgo: '1d ago',
     assignmentId: '1',
     replies: [
       {
@@ -229,6 +232,7 @@ export const mockIssues: Issue[] = [
     severity: 'critical',
     status: 'in-review',
     timestamp: '2026-04-03T07:00:00',
+    timeAgo: '8h ago',
     assignmentId: '3',
     replies: [
       {
@@ -255,6 +259,7 @@ export const mockIssues: Issue[] = [
     severity: 'minor',
     status: 'resolved',
     timestamp: '2026-04-01T14:00:00',
+    timeAgo: '2d ago',
     assignmentId: '4',
     replies: [
       {

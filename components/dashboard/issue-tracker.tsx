@@ -148,8 +148,8 @@ function IssueCard({ issue }: { issue: Issue }) {
               <h4 className="font-semibold text-card-foreground line-clamp-1">
                 {issue.title}
               </h4>
-              <p className="text-sm text-muted-foreground mt-0.5">
-                {issue.professorName} · {formatTimeAgo(issue.timestamp)}
+              <p suppressHydrationWarning className="text-sm text-muted-foreground mt-0.5">
+                {issue.professorName} · {issue.timeAgo ?? 'recently'}
               </p>
             </div>
 
