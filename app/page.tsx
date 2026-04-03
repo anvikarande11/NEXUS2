@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
@@ -140,6 +140,11 @@ const viewComponents: Record<ViewType, React.ComponentType> = {
 function TopBar() {
   const { toggleCommandPalette, toggleBlackoutMode, toggleChat, openUpload } = useDashboardStore()
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <div className="h-14 flex items-center justify-between px-4 border-b border-border glass-panel">
@@ -193,11 +198,16 @@ function TopBar() {
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
           title="Toggle theme"
+          suppressHydrationWarning
         >
-          {theme === 'dark' ? (
-            <Sun className="w-4 h-4" />
+          {mounted ? (
+            theme === 'dark' ? (
+              <Sun className="w-4 h-4" />
+            ) : (
+              <Moon className="w-4 h-4" />
+            )
           ) : (
-            <Moon className="w-4 h-4" />
+            <Sun className="w-4 h-4" />
           )}
         </motion.button>
 
