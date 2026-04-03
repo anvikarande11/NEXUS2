@@ -91,7 +91,7 @@ function TaskCard({ task, isTopRisk, isExpanded, onToggle }: {
   const colors = urgencyColors[task.urgency]
   // Use pre-calculated gravity or fallback to calculation
   const gravity = task.gravity ?? Math.round(calculateTaskGravity(task))
-  const timeUntil = getTimeUntilDue(task.dueDate)
+  const timeUntil = task.timeUntil ?? getTimeUntilDue(task.dueDate)
   const isOverdue = timeUntil === 'Overdue'
 
   return (
@@ -143,7 +143,7 @@ function TaskCard({ task, isTopRisk, isExpanded, onToggle }: {
               <div className="text-right shrink-0">
                 <div className="flex items-center gap-1">
                   <Target className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-lg font-bold text-primary">{gravity}</span>
+                  <span suppressHydrationWarning className="text-lg font-bold text-primary">{gravity}</span>
                 </div>
                 <span className="text-xs text-muted-foreground">Gravity</span>
               </div>
@@ -157,7 +157,7 @@ function TaskCard({ task, isTopRisk, isExpanded, onToggle }: {
                 isOverdue ? "text-destructive" : "text-muted-foreground"
               )}>
                 <Clock className="w-3.5 h-3.5" />
-                <span className="font-medium">{timeUntil}</span>
+                <span suppressHydrationWarning className="font-medium">{timeUntil}</span>
               </div>
 
               {/* Grade Weight */}

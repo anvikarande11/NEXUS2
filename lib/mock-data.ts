@@ -12,6 +12,7 @@ export interface Task {
   confidence: number
   description: string
   gravity?: number
+  timeUntil?: string
 }
 
 export interface Issue {
@@ -102,7 +103,8 @@ export const mockTasks: Task[] = [
     progress: 45,
     confidence: 35,
     description: 'Complete 3NF normalization with ER diagrams for university enrollment system',
-    gravity: 100
+    gravity: 100,
+    timeUntil: '79 days left'
   },
   {
     id: '2',
@@ -114,7 +116,8 @@ export const mockTasks: Task[] = [
     progress: 70,
     confidence: 60,
     description: 'Implement AVL tree with all rotation operations',
-    gravity: 85
+    gravity: 85,
+    timeUntil: '80 days left'
   },
   {
     id: '3',
@@ -126,7 +129,8 @@ export const mockTasks: Task[] = [
     progress: 20,
     confidence: 45,
     description: 'Simulate Round Robin and Priority scheduling algorithms',
-    gravity: 92
+    gravity: 92,
+    timeUntil: '81 days left'
   },
   {
     id: '4',
@@ -138,7 +142,8 @@ export const mockTasks: Task[] = [
     progress: 85,
     confidence: 80,
     description: 'Wireshark packet capture and analysis report',
-    gravity: 35
+    gravity: 35,
+    timeUntil: '82 days left'
   },
   {
     id: '5',
@@ -150,7 +155,8 @@ export const mockTasks: Task[] = [
     progress: 55,
     confidence: 50,
     description: 'Build and evaluate linear regression model on housing dataset',
-    gravity: 58
+    gravity: 58,
+    timeUntil: '83 days left'
   },
   {
     id: '6',
@@ -162,7 +168,8 @@ export const mockTasks: Task[] = [
     progress: 30,
     confidence: 70,
     description: 'Practice problems on integration by parts',
-    gravity: 18
+    gravity: 18,
+    timeUntil: '86 days left'
   }
 ]
 
