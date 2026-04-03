@@ -11,10 +11,40 @@ export type ViewType =
   | 'games'
   | 'class-path'
   | 'peer-study'
+  | 'whiteboard'
 
 export type ResourceFilterType = 'all' | 'notes' | 'links' | 'videos' | 'pdf' | 'favorites'
 export type HealthStatus = 'red' | 'yellow' | 'green'
 export type ThemeMode = 'light' | 'dark'
+
+export interface CollabParticipant {
+  id: string
+  name: string
+  avatar: string
+  color: string
+  cursorX: number
+  cursorY: number
+}
+
+export interface CollabDrawing {
+  id: string
+  points: { x: number; y: number }[]
+  color: string
+  width: number
+  type: 'pen' | 'eraser'
+  createdBy: string
+  timestamp: number
+}
+
+export interface CollabSession {
+  id: string
+  subject: string
+  title: string
+  participants: CollabParticipant[]
+  drawings: CollabDrawing[]
+  isActive: boolean
+  createdAt: number
+}
 
 export interface StudyPeer {
   id: string
@@ -146,6 +176,18 @@ interface DashboardState {
   startPomodoro: (roomId: string, focusTime: number, breakTime: number) => void
   stopPomodoro: (roomId: string) => void
   onlinePeers: StudyPeer[]
+  
+  // Whiteboard Collaboration
+  isWhiteboardOpen: boolean
+  toggleWhiteboard: () => void
+  currentSession: CollabSession | null
+  startSession: (subject: string, title: string) => void
+  endSession: () => void
+  addDrawing: (drawing: CollabDrawing) => void
+  clearDrawings: () => void
+  addParticipant: (participant: CollabParticipant) => void
+  removeParticipant: (participantId: string) => void
+  updateCursor: (participantId: string, x: number, y: number) => void
   
   // Actions
   toggleSidebar: () => void
@@ -334,6 +376,55 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
     { id: 'p3', name: 'Sam', avatar: 'SM', status: 'available', topic: 'Joins & Subqueries', timeOnline: 20 },
     { id: 'p4', name: 'Casey', avatar: 'CY', status: 'away', topic: 'Math', timeOnline: 120 },
   ],
+  
+  // Whiteboard Collaboration
+  isWhiteboardOpen: false,
+  toggleWhiteboard: () => set((state) => ({ isWhiteboardOpen: !state.isWhiteboardOpen })),
+  currentSession: null,
+  startSession: (subject, title) => set({
+    currentSession: {
+      id: crypto.randomUUID(),
+      subject,
+      title,
+      participants: [],
+      drawings: [],
+      isActive: true,
+      createdAt: Date.now()
+    }
+  }),
+  endSession: () => set({ currentSession: null }),
+  addDrawing: (drawing) => set((state) => ({
+    currentSession: state.currentSession ? {
+      ...state.currentSession,
+      drawings: [...state.currentSession.drawings, drawing]
+    } : null
+  })),
+  clearDrawings: () => set((state) => ({
+    currentSession: state.currentSession ? {
+      ...state.currentSession,
+      drawings: []
+    } : null
+  })),
+  addParticipant: (participant) => set((state) => ({
+    currentSession: state.currentSession ? {
+      ...state.currentSession,
+      participants: [...state.currentSession.participants, participant]
+    } : null
+  })),
+  removeParticipant: (participantId) => set((state) => ({
+    currentSession: state.currentSession ? {
+      ...state.currentSession,
+      participants: state.currentSession.participants.filter(p => p.id !== participantId)
+    } : null
+  })),
+  updateCursor: (participantId, x, y) => set((state) => ({
+    currentSession: state.currentSession ? {
+      ...state.currentSession,
+      participants: state.currentSession.participants.map(p =>
+        p.id === participantId ? { ...p, cursorX: x, cursorY: y } : p
+      )
+    } : null
+  })),
   
   // Actions
   toggleSidebar: () => set((state) => ({ isSidebarCollapsed: !state.isSidebarCollapsed })),

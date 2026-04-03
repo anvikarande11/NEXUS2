@@ -24,7 +24,8 @@ import { BlackoutMode } from '@/components/dashboard/blackout-mode'
 import { NexusChat } from '@/components/dashboard/nexus-chat'
 import { UploadResourceModal } from '@/components/dashboard/upload-resource-modal'
 import { PeerStudyCircle } from '@/components/dashboard/peer-study-circle'
-import { Search, Command, Flame, User, Moon, Sun, Upload, MessageCircle, Users } from 'lucide-react'
+import { CollabWhiteboard } from '@/components/dashboard/collab-whiteboard'
+import { Search, Command, Flame, User, Moon, Sun, Upload, MessageCircle, Users, Edit3 } from 'lucide-react'
 import { mockClassPaths } from '@/lib/mock-data'
 
 // Animation variants
@@ -139,7 +140,7 @@ const viewComponents: Record<ViewType, React.ComponentType> = {
 
 // Top Bar Component
 function TopBar() {
-  const { toggleCommandPalette, toggleBlackoutMode, toggleChat, openUpload, togglePeerStudy } = useDashboardStore()
+  const { toggleCommandPalette, toggleBlackoutMode, toggleChat, openUpload, togglePeerStudy, toggleWhiteboard } = useDashboardStore()
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
@@ -201,6 +202,17 @@ function TopBar() {
           title="Peer Study Circle"
         >
           <Users className="w-4 h-4" />
+        </motion.button>
+
+        {/* Whiteboard Button */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={toggleWhiteboard}
+          className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+          title="Collaborative Whiteboard"
+        >
+          <Edit3 className="w-4 h-4" />
         </motion.button>
 
         {/* Theme Toggle */}
@@ -336,6 +348,9 @@ export default function Dashboard() {
 
       {/* Peer Study Circle */}
       <PeerStudyCircle />
+
+      {/* Collaborative Whiteboard */}
+      <CollabWhiteboard />
 
       {/* Decorative Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
